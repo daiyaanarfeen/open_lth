@@ -5,11 +5,11 @@
 
 import numpy as np
 
-from datasets import base, cifar10, mnist, imagenet
+from datasets import base, cifar10, mnist, imagenet, domainnet
 from foundations.hparams import DatasetHparams
 from platforms.platform import get_platform
 
-registered_datasets = {'cifar10': cifar10, 'mnist': mnist, 'imagenet': imagenet}
+registered_datasets = {'cifar10': cifar10, 'mnist': mnist, 'imagenet': imagenet, 'domainnet': domainnet}
 
 
 def get(dataset_hparams: DatasetHparams, train: bool = True):
@@ -33,6 +33,9 @@ def get(dataset_hparams: DatasetHparams, train: bool = True):
 
     if train and dataset_hparams.subsample_fraction is not None:
         dataset.subsample(seed=seed, fraction=dataset_hparams.subsample_fraction)
+
+    if dataset_hparams.domains is not None:
+        dataset.domains(dataset_hparams.domains)
 
     if train and dataset_hparams.blur_factor is not None:
         if not isinstance(dataset, base.ImageDataset):
@@ -58,6 +61,11 @@ def iterations_per_epoch(dataset_hparams: DatasetHparams):
 
     if dataset_hparams.dataset_name in registered_datasets:
         num_train_examples = registered_datasets[dataset_hparams.dataset_name].Dataset.num_train_examples()
+        if dataset_hparams.dataset_name == "domainnet":
+            if dataset_hparams.domains is not None:
+                num_train_examples = sum([num_train_examples[k] for k in dataset_hparams.domains.split(',')])
+            else:
+                num_train_examples = sum(list(num_train_examples.values()))
     else:
         raise ValueError('No such dataset: {}'.format(dataset_hparams.dataset_name))
 
