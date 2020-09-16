@@ -65,11 +65,11 @@ class Dataset(base.ImageDataset):
         with get_platform().open(example, 'rb') as fp:
             return Image.open(fp).convert('RGB')
 
-    def domains(domains):
-        domains = split(domains, ',')
+    def domains(self, domains):
+        domains = domains.split(',')
         indices = [i for (i, ex) in enumerate(self._examples) if any([d in ex for d in domains])]
-        self._examples = [self._examples[i] for i in indices]
-        self._labels = [self._labels[i] for i in indices]
+        self._examples = self._examples[indices]
+        self._labels = self._labels[indices]
 
 
 DataLoader = base.DataLoader
