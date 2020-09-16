@@ -23,7 +23,7 @@ class Dataset(base.ImageDataset):
         examples = []
         for f in splits:
             examples += open(os.path.join(loc, 'splits', f), 'r').readlines()
-        examples = [ex.replace('\n', '').split(' ')]
+        examples = [ex.replace('\n', '').split(' ') for ex in examples]
         labels = [int(ex[1]) for ex in examples]
         examples = [os.path.join(loc, 'images', ex[0]) for ex in examples]
 

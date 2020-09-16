@@ -108,7 +108,8 @@ class DatasetHparams(Hparams):
     batch_size: int
     do_not_augment: bool = False
     transformation_seed: int = None
-    subsample_fraction: float = None
+    train_subsample_fraction: float = None
+    test_subsample_fraction: float = None
     random_labels_fraction: float = None
     unsupervised_labels: str = None
     blur_factor: int = None
@@ -121,7 +122,8 @@ class DatasetHparams(Hparams):
     _do_not_augment: str = 'If True, data augmentation is disabled. It is enabled by default.'
     _transformation_seed: str = 'The random seed that controls dataset transformations like ' \
                                 'random labels, subsampling, and unsupervised labels.'
-    _subsample_fraction: str = 'Subsample the training set, retaining the specified fraction: float in (0, 1]'
+    _train_subsample_fraction: str = 'Subsample the training set, retaining the specified fraction: float in (0, 1]'
+    _test_subsample_fraction: str = 'Subsample the testing set, retaining the specified fraction: float in (0, 1]'
     _random_labels_fraction: str = 'Apply random labels to a fraction of the training set: float in (0, 1]'
     _unsupervised_labels: str = 'Replace the standard labels with alternative, unsupervised labels. Example: rotation'
     _blur_factor: str = 'Blur the training set by downsampling and then upsampling by this multiple.'
@@ -137,6 +139,7 @@ class ModelHparams(Hparams):
     output_frozen: bool = False
     others_frozen: bool = False
     others_frozen_exceptions: str = None
+    outputs: int = None
 
     _name: str = 'Model Hyperparameters'
     _description: str = 'Hyperparameters that select the model, initialization, and weight freezing.'
@@ -147,6 +150,7 @@ class ModelHparams(Hparams):
     _output_frozen: str = 'If True, all outputt layer parameters are frozen at initialization.'
     _others_frozen: str = 'If true, all other (non-output, non-batchnorm) parameters are frozen at initialization.'
     _others_frozen_exceptions: str = 'A comma-separated list of any tensors that should not be frozen.'
+    _outputs: str = 'The number of logits output by the model. Leaving as \'None\' will default to the number of outputs the model type (e.g 1000 for imagenet_resnet).'
 
 
 @dataclass
