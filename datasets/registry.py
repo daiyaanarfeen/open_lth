@@ -38,13 +38,19 @@ def get(dataset_hparams: DatasetHparams, train: bool = True):
         dataset.subsample(seed=seed, fraction=dataset_hparams.test_subsample_fraction)
 
     if dataset_hparams.domains is not None:
-        dataset.domains(dataset_hparams.domains)
+        dataset.domains(dataset_hparams.domains.split(','))
 
     if train and dataset_hparams.blur_factor is not None:
         if not isinstance(dataset, base.ImageDataset):
             raise ValueError('Can blur images.')
         else:
-            dataset.blur(seed=seed, blur_factor=dataset_hparams.blur_factor)
+            dataset.blur(blur_factor=dataset_hparams.blur_factor)
+
+    if train and dataset_hparams.rotate_array is not None:
+        if not isinstance(dataset, base.ImageDataset):
+            raise ValueError('Can blur images.')
+        else:
+            dataset.rotate([float(r) for r in dataset_hparams.rotate_array.split(',')])
 
     if dataset_hparams.unsupervised_labels is not None:
         if dataset_hparams.unsupervised_labels != 'rotation':

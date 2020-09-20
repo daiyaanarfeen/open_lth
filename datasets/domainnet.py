@@ -66,7 +66,6 @@ class Dataset(base.ImageDataset):
             return Image.open(fp).convert('RGB')
 
     def domains(self, domains):
-        domains = domains.split(',')
         indices = [i for (i, ex) in enumerate(self._examples) if any([d in ex for d in domains])]
         self._examples = self._examples[indices]
         self._labels = self._labels[indices]

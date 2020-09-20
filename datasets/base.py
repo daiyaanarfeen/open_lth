@@ -4,6 +4,8 @@
 # LICENSE file in the root directory of this source tree.
 
 import abc
+from typing import Sequence
+import random
 import numpy as np
 from PIL import Image
 import torch
@@ -121,6 +123,18 @@ class ImageDataset(Dataset):
             image = torchvision.transforms.Resize(size)(image)
             return image
         self._image_transforms.append(blur_transform)
+
+    def rotate(self, angles: Sequence[float]) -> None:
+        """Adds a transformation that rotates porportionate subsets of the dataset according to \'angles\'."""
+
+        class RotateSubsample:
+            def __init__(self, angles):
+                self.angles = angles
+        
+            def __call__(self, x):
+                angle = random.choice(self.angles)
+                return torchvision.transforms.functional.rotate(x, angle)
+        self._image_transforms.append(RotateSubsample(angles))
 
     def unsupervised_rotation(self, seed: int):
         """Switch the task to unsupervised rotation."""
