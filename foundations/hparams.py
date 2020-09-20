@@ -114,6 +114,7 @@ class DatasetHparams(Hparams):
     unsupervised_labels: str = None
     blur_factor: int = None
     rotate_array: str = None
+    random_rotate: bool = False
     domains: str = None
 
     _name: str = 'Dataset Hyperparameters'
@@ -129,6 +130,7 @@ class DatasetHparams(Hparams):
     _unsupervised_labels: str = 'Replace the standard labels with alternative, unsupervised labels. Example: rotation'
     _blur_factor: str = 'Blur the training set by downsampling and then upsampling by this multiple.'
     _rotate_array: str = 'Comma separate floats, rotate training set proportionate to members of list. Example: \'0,0,30,90\' would rotate 2/4 images by 0 degrees, 1/4 by 30, and 1/4 by 90.'
+    _random_rotate: str = 'If doing rotation, whether to rotate randomly every epoch or to hold rotation for each image constant across epochs.'
     _domains: str = 'String of the domains to include if using DomainNet dataset, comma separated (no spaces). Keep this as \'None\' if not using DomainNet. Example: clipart,real,sketch'
 
 

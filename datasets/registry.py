@@ -50,7 +50,10 @@ def get(dataset_hparams: DatasetHparams, train: bool = True):
         if not isinstance(dataset, base.ImageDataset):
             raise ValueError('Can blur images.')
         else:
-            dataset.rotate([float(r) for r in dataset_hparams.rotate_array.split(',')])
+            if dataset_hparams.random_rotate:
+                dataset.random_rotate([float(r) for r in dataset_hparams.rotate_array.split(',')])
+            else:
+                dataset.rotate([float(r) for r in dataset_hparams.rotate_array.split(',')])
 
     if dataset_hparams.unsupervised_labels is not None:
         if dataset_hparams.unsupervised_labels != 'rotation':

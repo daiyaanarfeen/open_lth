@@ -101,6 +101,7 @@ class ImageDataset(Dataset):
         self._joint_tensor_transforms = joint_tensor_transforms or []
 
         self._composed = None
+        self._manual_rotate = False
 
     def __getitem__(self, index):
         if not self._composed:
@@ -108,7 +109,12 @@ class ImageDataset(Dataset):
                 self._image_transforms + [torchvision.transforms.ToTensor()] + self._tensor_transforms)
 
         example, label = self._examples[index], self._labels[index]
-        example = self.example_to_image(example)
+        if self._manual_rotate:
+            example, rotation = example
+            example = self.example_to_image(example)
+            example = torchvision.transforms.functional.rotate(example, rotation)
+        else:
+            example = self.example_to_image(example)
         for t in self._joint_image_transforms: example, label = t(example, label)
         example = self._composed(example)
         for t in self._joint_tensor_transforms: example, label = t(example, label)
@@ -125,6 +131,11 @@ class ImageDataset(Dataset):
         self._image_transforms.append(blur_transform)
 
     def rotate(self, angles: Sequence[float]) -> None:
+        self._manual_rotate = True
+        add_rotation = lambda x: (x, random.choice(angles)) 
+        self._examples = list(map(add_rotation, self._examples))
+
+    def random_rotate(self, angles: Sequence[float]) -> None:
         """Adds a transformation that rotates porportionate subsets of the dataset according to \'angles\'."""
 
         class RotateSubsample:
