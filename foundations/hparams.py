@@ -143,7 +143,6 @@ class ModelHparams(Hparams):
     output_frozen: bool = False
     others_frozen: bool = False
     others_frozen_exceptions: str = None
-    outputs: int = None
 
     _name: str = 'Model Hyperparameters'
     _description: str = 'Hyperparameters that select the model, initialization, and weight freezing.'
@@ -154,7 +153,6 @@ class ModelHparams(Hparams):
     _output_frozen: str = 'If True, all outputt layer parameters are frozen at initialization.'
     _others_frozen: str = 'If true, all other (non-output, non-batchnorm) parameters are frozen at initialization.'
     _others_frozen_exceptions: str = 'A comma-separated list of any tensors that should not be frozen.'
-    _outputs: str = 'The number of logits output by the model. Leaving as \'None\' will default to the number of outputs the model type (e.g 1000 for imagenet_resnet).'
 
 
 @dataclass
