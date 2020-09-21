@@ -108,8 +108,8 @@ class DatasetHparams(Hparams):
     batch_size: int
     do_not_augment: bool = False
     transformation_seed: int = None
-    train_subsample_fraction: float = None
-    test_subsample_fraction: float = None
+    subsample_fraction: float = None
+    subsample_fraction_test: float = None
     random_labels_fraction: float = None
     unsupervised_labels: str = None
     blur_factor: int = None
@@ -124,8 +124,8 @@ class DatasetHparams(Hparams):
     _do_not_augment: str = 'If True, data augmentation is disabled. It is enabled by default.'
     _transformation_seed: str = 'The random seed that controls dataset transformations like ' \
                                 'random labels, subsampling, and unsupervised labels.'
-    _train_subsample_fraction: str = 'Subsample the training set, retaining the specified fraction: float in (0, 1]'
-    _test_subsample_fraction: str = 'Subsample the testing set, retaining the specified fraction: float in (0, 1]'
+    _subsample_fraction: str = 'Subsample the training set, retaining the specified fraction: float in (0, 1]'
+    _subsample_fraction_test: str = 'Subsample the testing set, retaining the specified fraction: float in (0, 1]'
     _random_labels_fraction: str = 'Apply random labels to a fraction of the training set: float in (0, 1]'
     _unsupervised_labels: str = 'Replace the standard labels with alternative, unsupervised labels. Example: rotation'
     _blur_factor: str = 'Blur the training set by downsampling and then upsampling by this multiple.'

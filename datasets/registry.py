@@ -31,11 +31,11 @@ def get(dataset_hparams: DatasetHparams, train: bool = True):
     if train and dataset_hparams.random_labels_fraction is not None:
         dataset.randomize_labels(seed=seed, fraction=dataset_hparams.random_labels_fraction)
 
-    if train and dataset_hparams.train_subsample_fraction is not None:
-        dataset.subsample(seed=seed, fraction=dataset_hparams.train_subsample_fraction)
+    if train and dataset_hparams.subsample_fraction is not None:
+        dataset.subsample(seed=seed, fraction=dataset_hparams.subsample_fraction)
 
-    if not train and dataset_hparams.test_subsample_fraction is not None:
-        dataset.subsample(seed=seed, fraction=dataset_hparams.test_subsample_fraction)
+    if not train and dataset_hparams.subsample_fraction_test is not None:
+        dataset.subsample(seed=seed, fraction=dataset_hparams.subsample_fraction_test)
 
     if dataset_hparams.domains is not None:
         dataset.domains(dataset_hparams.domains.split(','))
@@ -81,8 +81,8 @@ def iterations_per_epoch(dataset_hparams: DatasetHparams):
     else:
         raise ValueError('No such dataset: {}'.format(dataset_hparams.dataset_name))
 
-    if dataset_hparams.train_subsample_fraction is not None:
-        num_train_examples *= dataset_hparams.train_subsample_fraction
+    if dataset_hparams.subsample_fraction is not None:
+        num_train_examples *= dataset_hparams.subsample_fraction
 
     return np.ceil(num_train_examples / dataset_hparams.batch_size).astype(int)
 
