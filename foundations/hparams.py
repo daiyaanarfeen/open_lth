@@ -139,6 +139,7 @@ class ModelHparams(Hparams):
     model_name: str
     model_init: str
     batchnorm_init: str
+    model_init_seed: int = None
     batchnorm_frozen: bool = False
     output_frozen: bool = False
     others_frozen: bool = False
@@ -148,6 +149,7 @@ class ModelHparams(Hparams):
     _description: str = 'Hyperparameters that select the model, initialization, and weight freezing.'
     _model_name: str = 'The name of the model. Examples: mnist_lenet, cifar_resnet_20, cifar_vgg_16'
     _model_init: str = 'The model initializer. Examples: kaiming_normal, kaiming_uniform, binary, orthogonal'
+    _model_init_seed: str = 'Seed for initializing weights.'
     _batchnorm_init: str = 'The batchnorm initializer. Examples: uniform, fixed'
     _batchnorm_frozen: str = 'If True, all batch normalization parameters are frozen at initialization.'
     _output_frozen: str = 'If True, all outputt layer parameters are frozen at initialization.'

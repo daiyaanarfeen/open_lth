@@ -39,6 +39,7 @@ def get(model_hparams: ModelHparams, outputs=None):
     model = None
     for registered_model in registered_models:
         if registered_model.is_valid_model_name(model_hparams.model_name):
+            torch.manual_seed(model_hparams.model_init_seed or 0)
             model = registered_model.get_model_from_name(model_hparams.model_name, init_fn, outputs)
             break
 
