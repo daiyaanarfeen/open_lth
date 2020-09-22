@@ -106,6 +106,7 @@ class Hparams(abc.ABC):
 class DatasetHparams(Hparams):
     dataset_name: str
     batch_size: int
+    batch_size_test: int = None
     do_not_augment: bool = False
     transformation_seed: int = None
     subsample_fraction: float = None
@@ -121,6 +122,7 @@ class DatasetHparams(Hparams):
     _description: str = 'Hyperparameters that select the dataset, data augmentation, and other data transformations.'
     _dataset_name: str = 'The name of the dataset. Examples: mnist, cifar10'
     _batch_size: str = 'The size of the mini-batches on which to train. Example: 64'
+    _batch_size_test: str = 'Batch size for testing, typically larger than train.'
     _do_not_augment: str = 'If True, data augmentation is disabled. It is enabled by default.'
     _transformation_seed: str = 'The random seed that controls dataset transformations like ' \
                                 'random labels, subsampling, and unsupervised labels.'

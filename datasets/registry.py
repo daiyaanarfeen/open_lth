@@ -64,8 +64,12 @@ def get(dataset_hparams: DatasetHparams, train: bool = True):
             dataset.unsupervised_rotation(seed=seed)
 
     # Create the loader.
+    if train or dataset_hparams.batch_size_test is None:
+        batch_size = dataset_hparams.batch_size
+    else:
+        batch_size = dataset_hparams.batch_size_test
     return registered_datasets[dataset_hparams.dataset_name].DataLoader(
-        dataset, batch_size=dataset_hparams.batch_size, num_workers=get_platform().num_workers)
+        dataset, batch_size=batch_size, num_workers=get_platform().num_workers)
 
 
 def iterations_per_epoch(dataset_hparams: DatasetHparams):
