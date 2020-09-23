@@ -18,10 +18,14 @@ class Branch(base.Branch):
         self,
         retrain_d: hparams.DatasetHparams,
         retrain_t: hparams.TrainingHparams,
-        start_at_step_zero: bool = False
+        start_at_step_zero: bool = False,
+        transfer_learn: bool = False
     ):
         # Get the mask and model.
-        m = models.registry.load(self.level_root, self.lottery_desc.train_start_step, self.lottery_desc.model_hparams)
+        if transfer_learn:
+            m = models.registry.load(self.level_root, self.lottery_desc.train_end_step, self.lottery_desc.model_hparams)
+        else:
+            m = models.registry.load(self.level_root, self.lottery_desc.train_start_step, self.lottery_desc.model_hparams)
         m = PrunedModel(m, Mask.load(self.level_root))
         start_step = Step.from_iteration(0 if start_at_step_zero else self.lottery_desc.train_start_step.iteration,
                                          datasets.registry.iterations_per_epoch(retrain_d))
