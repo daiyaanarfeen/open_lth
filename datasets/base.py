@@ -67,7 +67,7 @@ class Dataset(abc.ABC, torch.utils.data.Dataset):
         examples_to_randomize = np.random.RandomState(seed=seed+1).permutation(len(self._labels))[:num_to_randomize]
         self._labels[examples_to_randomize] = randomized_labels
 
-    def subsample(self, seed: int, fraction: float) -> None:
+    def subsample(self, seed: int, fraction: float, inverse: bool = False) -> None:
         """Subsample the dataset."""
 
         if self._subsampled:
@@ -75,7 +75,10 @@ class Dataset(abc.ABC, torch.utils.data.Dataset):
         self._subsampled = True
 
         examples_to_retain = np.ceil(len(self._labels) * fraction).astype(int)
-        examples_to_retain = np.random.RandomState(seed=seed+1).permutation(len(self._labels))[:examples_to_retain]
+        if inverse:
+            examples_to_retain = np.random.RandomState(seed=seed+1).permutation(len(self._labels))[examples_to_retain:]
+        else:
+            examples_to_retain = np.random.RandomState(seed=seed+1).permutation(len(self._labels))[:examples_to_retain]
         self._examples = self._examples[examples_to_retain]
         self._labels = self._labels[examples_to_retain]
 
@@ -102,6 +105,8 @@ class ImageDataset(Dataset):
 
         self._composed = None
         self._manual_rotate = False
+        self._manual_blur = False
+        self._blur_factor = 1.0
 
     def __getitem__(self, index):
         if not self._composed:
@@ -113,6 +118,16 @@ class ImageDataset(Dataset):
             example, rotation = example
             example = self.example_to_image(example)
             example = torchvision.transforms.functional.rotate(example, rotation)
+        elif self._manual_blur:
+            def blur_transform(image, blur_factor):
+                size = list(image.size)
+                image = torchvision.transforms.Resize([int(s / blur_factor) for s in size])(image)
+                image = torchvision.transforms.Resize(size)(image)
+                return image
+            example, blur = example
+            example = self.example_to_image(example)
+            if blur:
+                example = blur_transform(example, self._blur_factor)
         else:
             example = self.example_to_image(example)
         for t in self._joint_image_transforms: example, label = t(example, label)
@@ -120,13 +135,18 @@ class ImageDataset(Dataset):
         for t in self._joint_tensor_transforms: example, label = t(example, label)
         return example, label
 
-    def blur(self, blur_factor: float) -> None:
+    def blur(self, blur_factor: float, subsample_blur: float = 1.0) -> None:
         """Add a transformation that blurs the image by downsampling by blur_factor."""
+        self._manual_blur = True
+        add_blur = lambda x: (x, random.uniform(0, 1) <= subsample_blur)
+        self._examples = list(map(add_blur, self._examples))
 
+    def random_blur(self, blur_factor: float, subsample_blur: float = 1.0) -> None:
         def blur_transform(image):
             size = list(image.size)
-            image = torchvision.transforms.Resize([int(s / blur_factor) for s in size])(image)
-            image = torchvision.transforms.Resize(size)(image)
+            if random.uniform(0, 1) <= subsample_blur:
+                image = torchvision.transforms.Resize([int(s / blur_factor) for s in size])(image)
+                image = torchvision.transforms.Resize(size)(image)
             return image
         self._image_transforms.append(blur_transform)
 

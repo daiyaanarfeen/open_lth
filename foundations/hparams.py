@@ -111,9 +111,12 @@ class DatasetHparams(Hparams):
     transformation_seed: int = None
     subsample_fraction: float = None
     subsample_fraction_test: float = None
+    subsample_inverse: bool = False
     random_labels_fraction: float = None
     unsupervised_labels: str = None
     blur_factor: int = None
+    random_blur: bool = False
+    subsample_blur: float = 1.0
     rotate_array: str = None
     random_rotate: bool = False
     domains: str = None
@@ -128,9 +131,12 @@ class DatasetHparams(Hparams):
                                 'random labels, subsampling, and unsupervised labels.'
     _subsample_fraction: str = 'Subsample the training set, retaining the specified fraction: float in (0, 1]'
     _subsample_fraction_test: str = 'Subsample the testing set, retaining the specified fraction: float in (0, 1]'
+    _subsample_inverse: str = 'Whether to use the seed to decide which examples to take or keep'
     _random_labels_fraction: str = 'Apply random labels to a fraction of the training set: float in (0, 1]'
     _unsupervised_labels: str = 'Replace the standard labels with alternative, unsupervised labels. Example: rotation'
     _blur_factor: str = 'Blur the training set by downsampling and then upsampling by this multiple.'
+    _subsample_blur: str = 'Fraction of training set to apply blurring to.'
+    _random_blur: str = 'Whether to hold which examples are blurred constant or do it randomly every iteration.'
     _rotate_array: str = 'Comma separate floats, rotate training set proportionate to members of list. Example: \'0,0,30,90\' would rotate 2/4 images by 0 degrees, 1/4 by 30, and 1/4 by 90.'
     _random_rotate: str = 'If doing rotation, whether to rotate randomly every epoch or to hold rotation for each image constant across epochs.'
     _domains: str = 'String of the domains to include if using DomainNet dataset, comma separated (no spaces). Keep this as \'None\' if not using DomainNet. Example: clipart,real,sketch'

@@ -9,7 +9,6 @@ import typing
 
 from foundations import paths
 from foundations.step import Step
-import lottery.desc
 from platforms.platform import get_platform
 
 

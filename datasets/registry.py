@@ -32,10 +32,10 @@ def get(dataset_hparams: DatasetHparams, train: bool = True):
         dataset.randomize_labels(seed=seed, fraction=dataset_hparams.random_labels_fraction)
 
     if train and dataset_hparams.subsample_fraction is not None:
-        dataset.subsample(seed=seed, fraction=dataset_hparams.subsample_fraction)
+        dataset.subsample(seed=seed, fraction=dataset_hparams.subsample_fraction, inverse=dataset_hparams.subsample_inverse)
 
     if not train and dataset_hparams.subsample_fraction_test is not None:
-        dataset.subsample(seed=seed, fraction=dataset_hparams.subsample_fraction_test)
+        dataset.subsample(seed=seed, fraction=dataset_hparams.subsample_fraction_test, inverse=dataset_hparams.subsample_inverse)
 
     if dataset_hparams.domains is not None:
         dataset.domains(dataset_hparams.domains.split(','))
@@ -44,7 +44,10 @@ def get(dataset_hparams: DatasetHparams, train: bool = True):
         if not isinstance(dataset, base.ImageDataset):
             raise ValueError('Can blur images.')
         else:
-            dataset.blur(blur_factor=dataset_hparams.blur_factor)
+            if dataset_hparams.random_blur:
+                dataset.random_blur(blur_factor=dataset_hparams.blur_factor, subsample_blur=dataset_hparams.subsample_blur)
+            else:
+                dataset.blur(blur_factor=dataset_hparams.blur_factor, subsample_blur=dataset_hparams.subsample_blur)
 
     if train and dataset_hparams.rotate_array is not None:
         if not isinstance(dataset, base.ImageDataset):
